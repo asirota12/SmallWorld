@@ -85,50 +85,32 @@ def plot(re,im,b,N,p,k,mat):
     # print("plotted")
     return
 
-def solveD(gamma,p,N,k,b,runs,skip=False):
-    reD=[]
-    imD=[]
-    for i in range(runs):
-        if (i%10==0):
-            print i/1000.0 
-        eigvalD=np.linalg.eigvals(D(gamma,p,N,k))
-        for z in eigvalD:
-            if(skip and z.real>3):
-                print('skipped in D')
-            else:
-                reD.append(z.real)
-                imD.append(z.imag)
-    plot(reD,imD,b,N,p,k,'D')
-
-def solveA(gamma,p,N,k,b,runs,skip=False):
-    reA=[]
-    imA=[]
-    for i in range(runs):
-        if (i%10==0):
-            print i/1000.0 
-        eigvalA=np.linalg.eigvals(A(p,N))
-        for z in eigvalA:
-            if(skip and z.real>3):
-                print('skipped in A')
-            else:
-                reA.append(z.real)
-                imA.append(z.imag)
-    plot(reA,imA,b,N,p,k,'A')
     
-def solveS(gamma,p,N,k,b,runs,skip=False):
-    reS=[]
-    imS=[]
+def solve(gamma,p,N,k,b,runs,mat,skip=False):
+    re=[]
+    im=[]
     for i in range(runs):
+        #timer
         if (i%10==0):
             print i/1000.0 
-        eigvalS=np.linalg.eigvals(S(gamma,p,N,k))
-        for z in eigvalS:
+        #choose your set of eigenvalues
+        eigval=[]
+        if mat=='S':
+            eigval=np.linalg.eigvals(S(gamma,p,N,k))
+        elif mat=='A':
+            eigval=np.linalg.eigvals(A(p,N))
+        elif mat=='D':
+            eigval=np.linalg.eigvals(D(gamma,p,N,k))
+        else:
+            print("need a matrix type")
+            
+        for z in eigval:
             if(skip and z.real>3):
-                print('skipped in S')
+                print('skipped in '+mat)
             else:
-                reS.append(z.real)
-                imS.append(z.imag)
-    plot(reS,imS,b,N,p,k,'S')
+                re.append(z.real)
+                im.append(z.imag)
+    plot(re,im,b,N,p,k,mat)
     
 def solveDequ(p,N,k,b,runs,skip=False): 
     reDequ=[]
@@ -136,6 +118,7 @@ def solveDequ(p,N,k,b,runs,skip=False):
     x=0
     if skip:
         x=1
+        print('skipped in Dequ')
     for i in range(x,N): #skipping number 0
         z=lmbdaD(i,k,N,p)
         reDequ.append(z.real)
@@ -158,9 +141,9 @@ runs=1
 
 #for j in range(2,1000,100):
  #   for i in range(4):
-solveD(gamma,p,N,k,b,runs)
-solveA(gamma,p,N,k,b,runs)
-solveS(gamma,p,N,k,b,runs)
-solveDequ(p,N,k,b,runs)
+solve(gamma,p,N,k,b,runs,'D',skip=True)
+solve(gamma,p,N,k,b,runs,'A',skip=True)
+solve(gamma,p,N,k,b,runs,'S',skip=True)
+solveDequ(p,N,k,b,runs,skip=True)
 
 
