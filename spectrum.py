@@ -50,9 +50,9 @@ def C(k,N):
 def J(N):
     return np.ones((N,N))
 
-def D(gamma,p,k,N):
+def D(gamma,p,N,k):
     d= (gamma*C(k,N)+alpha(p)*J(N))/np.sqrt(N)
-    #print(d)
+    print(d)
     return d
     
 def S(gamma,p,N,k):
@@ -65,7 +65,7 @@ def plot(re,im,b,N,p,k,mat):
     plt.subplot(211)
     plt.hist2d(re, im, bins=b,norm=LogNorm())
     plt.colorbar()
-    title='Eigenvalues of {3},N={0},p={1},k={2}'.format(N,p,k,mat)
+    title='Eigenvalues of {3},N={0},p={1},k={2},{4}of them'.format(N,p,k,mat,len(re))
     filename='hist({0}=N)({1}=p)({2}=k)({3}=mat).png'.format(N,p,k,mat)
     plt.title(title)
     plt.xlabel('real(lambda)')
@@ -142,8 +142,8 @@ runs=1
 #for j in range(2,1000,100):
  #   for i in range(4):
 solve(gamma,p,N,k,b,runs,'D',skip=True)
-solve(gamma,p,N,k,b,runs,'A',skip=True)
-solve(gamma,p,N,k,b,runs,'S',skip=True)
+#solve(gamma,p,N,k,b,runs,'A',skip=True)
+#solve(gamma,p,N,k,b,runs,'S',skip=True)
 solveDequ(p,N,k,b,runs,skip=True)
 
 
