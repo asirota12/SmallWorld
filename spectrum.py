@@ -5,7 +5,7 @@ Created on Thu Feb 16 21:47:37 2017
 @author: Alex
 """
 import numpy as np
-
+from matplotlib.colors import LogNorm
 import matplotlib.pyplot as plt
 
 def alpha(p):
@@ -31,6 +31,7 @@ def A(p,N):
                 a[i,j]=(1/p-1)/np.sqrt(N)
             else:            
                 a[i,j]=-1*alpha(p)/np.sqrt(N)
+    print(a)
     return a;
 
 def C(k,N):
@@ -49,37 +50,68 @@ def C(k,N):
 def J(N):
     return np.ones((N,N))
 
+def D(gamma,p,k,N):
+    d= (gamma*C(k,N)+alpha(p)*J(N))/np.sqrt(N)
+    print(d)
+    return d
+    
 def S(gamma,p,N,k):
-    return A(p,N)+(gamma*C(k,N)+alpha(p)*J(N))/np.sqrt(N)
+    s=A(p,N)+D(gamma,p,k,N)
+    print(s)
+    return s
 
-def plot(re,im):
+def plot(re,im,b,N,p,k):
     plt.figure(1)
     plt.subplot(211)
-    plt.hist2d(re, im, bins=50)
+    plt.hist2d(re, im, bins=b,norm=LogNorm())
     plt.colorbar()
-    #plt.plot(values,'ro')
-    plt.title('Eigenvalues of D')
+    title='Eigenvalues of S,N={0},p={1},k={2}'.format(N,p,k)
+    filename='hist({0}N)({1}p)({2}k).png'.format(N,p,k)
+    plt.title(title)
     plt.xlabel('real(lambda)')
     plt.ylabel('imag(lambda)')
-    #plt.axis([-1,N+1,-1,3])
-    plt.show()
-    #plt.show()
+    plt.savefig(filename, bbox_inches='tight')
     
     plt.figure(2)
     plt.subplot(212)
-    plt.plot(re, im, 'ro')
-    return
+    plt.plot(re, im,'bo',markersize=1)
+    plt.title(title)
+    plt.xlabel('real(lambda)')
+    plt.ylabel('imag(lambda)')
     
+    filename='plot({0}N)({1}p)({2}k).png'.format(N,p,k)
+    plt.savefig(filename, bbox_inches='tight')
+    plt.close('all')
+   # print("plotted")
+    return
 
-k=6 #connectivity even
-p=.000001 #0<p<1
-N=1000 # size of our square matrix
+def run(k,p,N,gamma,b,runs):
+    re=[]
+    im=[]
+    for i in range(runs):
+        if (i%10==0):
+            print i/1000.0 
+        eigvals=np.linalg.eigvals(S(gamma,p,N,k))
+        for z in eigvals:
+            re.append(z.real)
+            im.append(z.imag)
+    plot(re,im,b,N,p,k)
+
+"""
+k is connectivity its even
+0<p<1 
+N is size of the matricies
+b is bins
+"""  
+k=4
+p=.2 
+N=100
 gamma=1
+b=200
+runs=1
 
-eigvals=np.linalg.eigvals(S(gamma,p,N,k))
-re = [z.real for z in eigvals]
-im = [z.imag for z in eigvals]
-
-plot(re,im)
+#for j in range(2,1000,100):
+ #   for i in range(4):
+run(k,p,N,gamma,b,runs)
 
 
