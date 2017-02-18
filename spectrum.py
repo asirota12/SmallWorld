@@ -52,11 +52,11 @@ def J(N):
 
 def D(gamma,p,N,k):
     d= (gamma*C(k,N)+alpha(p)*J(N))/np.sqrt(N)
-    print(d)
+    #print(d)
     return d
     
 def S(gamma,p,N,k):
-    s=A(p,N)+D(gamma,p,k,N)
+    s=A(p,N)+D(gamma,p,N,k)
    # print(s)
     return s
 
@@ -91,8 +91,8 @@ def solve(gamma,p,N,k,b,runs,mat,skip=False):
     im=[]
     for i in range(runs):
         #timer
-        if (i%10==0):
-            print i/1000.0 
+        #if (i%10==0):
+         #   print i/ float(runs)
         #choose your set of eigenvalues
         eigval=[]
         if mat=='S':
@@ -101,6 +101,11 @@ def solve(gamma,p,N,k,b,runs,mat,skip=False):
             eigval=np.linalg.eigvals(A(p,N))
         elif mat=='D':
             eigval=np.linalg.eigvals(D(gamma,p,N,k))
+        elif mat=='C':
+            eigval=np.linalg.eigvals(C(k,N))
+        elif mat=='J':
+            eigval=np.linalg.eigvals(J(N))
+        
         else:
             print("need a matrix type")
             
@@ -132,18 +137,25 @@ k is connectivity its even
 N is size of the matricies
 b is bins
 """  
-k=4
-p=.2 
-N=1000
+k=40
+p=.5 
+N=100
 gamma=1
 b=20
-runs=1
+runs=100
 
-#for j in range(2,1000,100):
- #   for i in range(4):
-solve(gamma,p,N,k,b,runs,'D',skip=True)
-#solve(gamma,p,N,k,b,runs,'A',skip=True)
-#solve(gamma,p,N,k,b,runs,'S',skip=True)
-solveDequ(p,N,k,b,runs,skip=True)
+solve(gamma,p,N,k,b,runs,'D')
+        #print("D")
+solve(gamma,p,N,k,b,runs,'C')
+#print("C")
+solve(gamma,p,N,k,b,runs,'J')
+        #print("J")
+solve(gamma,p,N,k,b,runs,'A')
+        #print("A")
+solve(gamma,p,N,k,b,runs,'S')
+        #print("S")
+solveDequ(p,N,k,b,runs)
+        #print("Dequ")
+
 
 
